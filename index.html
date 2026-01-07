@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rowls Mobile Pad</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  font-family: system-ui, sans-serif;
+  background: url('images/aa.jpg') no-repeat center center fixed;
+  background-size:cover;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* SPLASH */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #fff;
+}
+#splash img {
+  width: 90vw;
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 50px;
+  transform: scale(0.6);
+  animation: splashZoom 1.2s ease-out forwards;
+}
+#splash-text {
+  font-family: system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  animation: fadeInText 1s forwards .5s;
+  margin-top: 10px;
+}
+@keyframes splashZoom { 0% { transform: scale(0.6); } 100% { transform: scale(1.2); } }
+@keyframes fadeInText { to { opacity: 1; } }
+
+/* PADS */
+.pad-grid {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 65px;
+  gap:5px;
+  width:100%;
+  max-width:420px;
+  margin-bottom:20px;
+  margin-top: 5px;
+}
+.pad {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:14px;
+  font-size:32px;
+  cursor:pointer;
+  user-select:none;
+  transition: transform 0.1s, box-shadow 0.2s, filter 0.1s;
+  color:#fff;
+}
+.pad:active {
+  transform: scale(0.95);
+  filter: brightness(1.3);
+  box-shadow: 0 0 20px #fff;
+}
+.pad.active { animation: glow 0.5s ease-in-out infinite, padPulse 0.5s alternate infinite; }
+.pad.flash { animation: flash 0.15s forwards; }
+@keyframes glow { 0%,100%{ box-shadow:0 0 12px #fff; } 50%{ box-shadow:0 0 24px #fff; } }
+@keyframes padPulse { 0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);} }
+@keyframes flash { 0%{filter:brightness(1);}50%{filter:brightness(2);}100%{filter:brightness(1);} }
+
+.pad.color1 { background:#ff6b6b; }
+.pad.color2 { background:#ffb347; }
+.pad.color3 { background:#6bffb3; }
+.pad.color4 { background:#6bafff; }
+.pad.color5 { background:#d46bff; }
+.pad.color6 { background:#ff6bda; }
+
+/* MUSIC BAR */
+.music-bar {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 65px;
+  gap:5px;
+  width:100%;
+  max-width:400px;
+  margin:0 auto 14px auto;
+}
+
+.music-bar button {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  border-radius:12px;
+  cursor:pointer;
+  user-select:none;
+  transition: transform 0.1s, box-shadow 0.2s;
+  color:#fff;
+  width:100%;
+  height:65px;
+  padding:0;
+  font-size:22px;
+  position:relative;
+}
+.music-bar button.active { animation: glow 0.5s ease-in-out infinite, padPulse 0.5s alternate infinite; transform: scale(1.05); }
+.music-bar button span.title {
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:65px;
+  text-align:center;
+  margin-top:3px;
+  display:block;
+}
+.music-bar button.color1 { background:#ff6b6b; }
+.music-bar button.color2 { background:#ffb347; }
+.music-bar button.color3 { background:#6bffb3; }
+.music-bar button.color4 { background:#6bafff; }
+.music-bar button.color5 { background:#d46bff; }
+.music-bar button.color6 { background:#ff6bda; }
+
+/* LONG MUSIC */
+.long-music-container { width:100%; display:flex; flex-direction:column; align-items:center; margin-bottom:12px; }
+.long-music { width:100%; max-width:325px; height:50px; border-radius:12px; background:#6bafff; display:flex; align-items:center; justify-content:center; font-size:28px; cursor:pointer; color:#fff; position:relative; transition: transform 0.1s, box-shadow 0.2s; }
+.long-music.active { animation: glow 0.5s ease-in-out infinite, padPulse 0.5s alternate infinite; transform: scale(1.0); }
+.long-music.flash { animation: flash 0.15s forwards; }
+.long-music .title { font-size:13px; display:block; max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; pointer-events:none; }
+
+#volumeControl { width:80%; margin-top:10px; height:8px; border-radius:3px; cursor:pointer; background: rgba(255,255,255,0.3); -webkit-appearance:none; }
+#volumeControl::-webkit-slider-thumb { -webkit-appearance:none; height:14px; width:14px; border-radius:50%; background:#fff; cursor:pointer; margin-top:0px; }
+#volumeControl::-moz-range-thumb { height:14px; width:14px; border-radius:50%; background:#fff; cursor:pointer; }
+
+/* CONTROLS */
+.control-bar { display:flex; gap:5px; margin-bottom:12px; justify-content:center; }
+.control-bar button { padding:7px 12px; border-radius:12px; border:none; cursor:pointer; background:rgba(255,255,255,0.56); color:#111; font-weight:bold; }
+.control-bar button:hover { background: lightskyblue; }
+
+/* CATEGORIES */
+.category-bar {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.category-bar button {
+  padding: 7px 12px;
+  border-radius: 20px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.75);
+  color: #000;
+  /* BLACK FONT */
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+
+/* HOVER EFFECT */
+.category-bar button:hover {
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+  transform: scale(1.05);
+}
+
+/* ACTIVE (SELECTED CATEGORY) */
+.category-bar button.active {
+  background: lightskyblue;
+  color: #000;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+
+/* UPLOAD */
+.upload-input { display:none; }
+
+/* MAIN CONTAINER (for landscape layout) */
+.main-container { display:flex; flex-direction:column; flex:1; gap:10px; }
+
+/* LANDSCAPE-ONLY LAYOUT */
+@media (orientation: landscape) {
+  .main-container { flex-direction:row; gap:10px; padding:10px; flex:1; }
+
+  .pad-grid { flex:1; grid-template-columns: repeat(3, 1fr); grid-auto-rows:1fr; gap:5px; }
+  .music-bar { flex:1; grid-template-columns: repeat(2, 1fr); grid-auto-rows:1fr; gap:3px; }
+
+  .bottom-bar { display:flex; flex-direction:column; gap:6px; padding:10px; }
+
+  .long-music-container, .control-bar, .category-bar { width:100%; justify-content:center; }
+  .long-music { width:90%; max-width:none; }
+  #volumeControl { width:90%; max-width:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img src="icons/icon2.png" alt="ROWLS MOBILE PAD">
+  <div id="splash-text">ROWLS MOBILE PAD</div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="main-container">
+
+  <!-- PAD GRID LEFT -->
+  <div class="pad-grid" id="padGrid">
+    <div class="pad color1" data-audio="sounds/drum1.mp3">🥁</div>
+    <div class="pad color2" data-audio="sounds/a.wav">😂</div>
+    <div class="pad color3" data-audio="sounds/b.wav">🤠</div>
+    <div class="pad color4" data-audio="sounds/c.wav">💣</div>
+    <div class="pad color5" data-audio="sounds/d.wav">🎲</div>
+    <div class="pad color6" data-audio="sounds/sound6.mp3">❌</div>
+    <div class="pad color1" data-audio="sounds/drum2.mp3">🥁</div>
+    <div class="pad color2" data-audio="sounds/sound8.mp3">👟</div>
+    <div class="pad color3" data-audio="sounds/doorbell.mp3">🔔</div>
+    <div class="pad color2" data-audio="sounds/coffee.mp3">☕</div>
+    <div class="pad color5" data-audio="sounds/dog.mp3">🐶</div>
+    <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color1" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color3" data-audio="sounds/fireplace.mp3">😂</div>
+    <div class="pad color4" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color1" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color3" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color2" data-audio="sounds/fireplace.mp3">🤠</div>
+  </div>
+
+  <!-- MUSIC GRID RIGHT -->
+  <div class="music-bar" id="musicBar"></div>
+</div>
+
+<!-- BOTTOM CONTROLS -->
+<div class="bottom-bar">
+  <div class="long-music-container">
+    <div class="long-music" id="longMusic">
+      <span class="title">Background Music</span>
+    </div>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <div class="control-bar">
+    <button id="clearPads">Clear Pads</button>
+    <button id="reloadPads">Reload Pads</button>
+  </div>
+
+  <div class="category-bar">
+    <button data-category="specialPads">Home</button>
+    <button data-category="wedding">Wedding</button>
+    <button data-category="birthday">Birthday</button>
+    <button data-category="party">Party</button>
+    <button data-category="love">Love/Sad</button>
+    <button data-category="fun">Fun</button>
+    <button data-category="tiktok">TikTok</button>
+    <button data-category="fashion">Fashion</button>
+    <button data-category="awarding">Awarding</button>
+  </div>
+</div>
+
+<input type="file" accept="audio/*" id="uploadAudio" class="upload-input">
+
+<script>
+// --- PADS ---
+const pads = document.querySelectorAll('.pad');
+const padAudios = new Map();
+pads.forEach(pad => {
+  const audio = new Audio(pad.dataset.audio);
+  audio.preload = 'auto';
+  padAudios.set(pad, audio);
+
+  const startPlay = () => {
+    audio.currentTime = 0;
+    audio.play();
+    pad.classList.add('active');
+    pad.classList.add('flash');
+    setTimeout(()=>pad.classList.remove('flash'),150);
+  };
+  const stopPlay = () => {
+    audio.pause();
+    audio.currentTime = 0;
+    pad.classList.remove('active');
+  };
+
+  pad.addEventListener('touchstart', startPlay);
+  pad.addEventListener('mousedown', startPlay);
+  pad.addEventListener('touchend', stopPlay);
+  pad.addEventListener('mouseup', stopPlay);
+  pad.addEventListener('mouseleave', stopPlay);
+});
+
+// --- MUSIC DATA ---
+const musicData = {
+  wedding: Array.from({length:12},(_,i)=>({
+    file:'wedding'+(i+1), 
+    title:'.Wedding '+(i+1)})),
+  birthday: Array.from({length:12}, (_,i)=>({file:'birthday'+(i+1), title:'Birthday '+(i+1)})),
+  party: Array.from({length:12}, (_,i)=>({file:'party'+(i+1), title:'Party '+(i+1)})),
+  love: Array.from({length:12}, (_,i)=>({file:'love'+(i+1), title:'Love '+(i+1)})),
+  fun: Array.from({length:12}, (_,i)=>({file:'fun'+(i+1), title:'Fun '+(i+1)})),
+  tiktok: Array.from({length:12}, (_,i)=>({file:'tiktok'+(i+1), title:'TikTok '+(i+1)})),
+  fashion: Array.from({length:12}, (_,i)=>({file:'fashion'+(i+1), title:'Fashion '+(i+1)})),
+  awarding: Array.from({length:12}, (_,i)=>({file:'awarding'+(i+1), title:'Award '+(i+1)})),
+  specialPads: [
+    { file: 'special1', title: 'Special 1' },
+    { file: 'special2', title: 'Special 2' },
+    { file: 'special3', title: 'Special 3' },
+    { file: 'special4', title: 'Special 4' },
+    { file: 'special5', title: 'Special 5' },
+    { file: 'special6', title: 'Special 6' },
+    { file: 'special7', title: 'Special 7' },
+    { file: 'special8', title: 'Special 8' },
+    { file: 'special9', title: 'Special 9' },
+    { file: 'special10', title: 'Special 10' },
+    { file: 'special11', title: 'Special 11' },
+    { file: 'special12', title: 'Special 12' }
+    
+  ]
+};
+
+const musicBar = document.getElementById('musicBar');
+const uploadInput = document.getElementById('uploadAudio');
+let currentCategory = 'specialPads'; 
+const categoryAudios = {};
+
+Object.keys(musicData).forEach(cat => {
+  categoryAudios[cat] = musicData[cat].map(item=>({
+    name:item.file,
+    defaultSrc:`sounds/${item.file}.mp3`,
+    defaultTitle:item.title,
+    audio:new Audio(`sounds/${item.file}.mp3`),
+    button:null,
+    title:item.title
+  }));
+});
+
+// LOAD MUSIC BUTTONS
+function loadMusicButtons(category){
+  currentCategory = category;
+  musicBar.innerHTML = '';
+  const audios = categoryAudios[category];
+  if(!audios) return;
+
+  audios.forEach((item,index)=>{
+    const btn = document.createElement('button');
+    btn.className = `color${(index%6)+1}`;
+    item.button = btn;
+    const titleSpan = document.createElement('span');
+    titleSpan.className='title';
+    titleSpan.textContent = item.title;
+    btn.appendChild(titleSpan);
+
+    btn.addEventListener('click', ()=>{
+      if(item.audio.paused){ item.audio.play(); btn.classList.add('active'); } 
+      else { item.audio.pause(); btn.classList.remove('active'); }
+      btn.classList.add('flash');
+      setTimeout(()=>btn.classList.remove('flash'),150);
+    });
+
+    btn.addEventListener('dblclick', ()=>{
+      uploadInput.click();
+      uploadInput.onchange=()=>{
+        const file = uploadInput.files[0];
+        if(file){
+          item.audio.src=URL.createObjectURL(file);
+          item.title=file.name;
+          titleSpan.textContent=file.name;
+        }
+      };
+    });
+
+    musicBar.appendChild(btn);
+  });
+}
+
+// ASSIGN PADS TO CATEGORY
+function assignPadsToCategory(category){
+  const padsArr = Array.from(pads);
+  const audios = [...(categoryAudios[category] || [])];
+  padsArr.forEach((pad,i)=>{
+    if(audios.length===0) return;
+    const item = audios.shift();
+    pad.dataset.audio = item.defaultSrc;
+    padAudios.set(pad,item.audio);
+  });
+}
+
+// CATEGORY BUTTONS
+const categoryButtons = document.querySelectorAll('.category-bar button');
+
+categoryButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    // remove active from all
+    categoryButtons.forEach(b=>b.classList.remove('active'));
+
+    // set active to clicked
+    btn.classList.add('active');
+
+    loadMusicButtons(btn.dataset.category);
+    assignPadsToCategory(btn.dataset.category);
+  });
+});
+
+// set default active category
+document.querySelector('[data-category="specialPads"]').classList.add('active');
+
+// LONG MUSIC
+const longMusicButton = document.getElementById('longMusic');
+const longMusicAudio = new Audio('sounds/featured.mp3');
+longMusicAudio.loop=true;
+const volumeSlider = document.getElementById('volumeControl');
+volumeSlider.addEventListener('input', ()=>{ longMusicAudio.volume = volumeSlider.value; });
+
+longMusicButton.addEventListener('click', ()=>{
+  if(longMusicAudio.paused){
+    longMusicAudio.play();
+    longMusicButton.classList.add('active');
+    longMusicButton.classList.add('flash');
+    setTimeout(()=>longMusicButton.classList.remove('flash'),150);
+  } else {
+    longMusicAudio.pause();
+    longMusicButton.classList.remove('active');
+  }
+});
+
+longMusicButton.addEventListener('dblclick', ()=>{
+  uploadInput.click();
+  uploadInput.onchange = ()=>{
+    const file = uploadInput.files[0];
+    if(file){
+      longMusicAudio.src = URL.createObjectURL(file);
+      longMusicButton.querySelector('.title').textContent = file.name;
+      longMusicAudio.loop = true;
+    }
+  };
+});
+
+// CONTROLS
+document.getElementById('clearPads').addEventListener('click', ()=>{
+  pads.forEach(p=>{ 
+    p.classList.remove('active'); 
+    const a=padAudios.get(p);
+    a.pause();
+    a.currentTime=0;
+  });
+  Object.values(categoryAudios).forEach(audios=>audios.forEach(a=>a.button?.classList.remove('active')));
+  longMusicAudio.pause();
+  longMusicButton.classList.remove('active');
+});
+
+document.getElementById('reloadPads').addEventListener('click', ()=>{
+  const audios = categoryAudios[currentCategory];
+  audios.forEach(item=>{
+    item.audio.src=item.defaultSrc;
+    item.title=item.defaultTitle;
+    if(item.button){
+      item.button.querySelector('.title').textContent=item.defaultTitle;
+      item.button.classList.remove('active');
+    }
+  });
+  longMusicAudio.src='sounds/featured.mp3';
+  longMusicButton.querySelector('.title').textContent='Background Music';
+  longMusicButton.classList.remove('active');
+});
+
+// SERVICE WORKER
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js");});
+}
+
+// INITIAL LOAD
+loadMusicButtons(currentCategory);
+assignPadsToCategory(currentCategory);
+window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1200);
+});
+</script> 
+</body> 
+</html>
