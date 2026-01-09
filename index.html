@@ -224,22 +224,22 @@ body {
 
   <!-- PAD GRID LEFT -->
   <div class="pad-grid" id="padGrid">
-    <div class="pad color1" data-audio="sounds/drum1.mp3">🥁</div>
-    <div class="pad color2" data-audio="sounds/a.wav">😂</div>
-    <div class="pad color3" data-audio="sounds/b.wav">🤠</div>
-    <div class="pad color4" data-audio="sounds/c.wav">💣</div>
-    <div class="pad color5" data-audio="sounds/d.wav">🎲</div>
-    <div class="pad color6" data-audio="sounds/sound6.mp3">❌</div>
-    <div class="pad color1" data-audio="sounds/drum2.mp3">🥁</div>
-    <div class="pad color2" data-audio="sounds/sound8.mp3">👟</div>
-    <div class="pad color3" data-audio="sounds/doorbell.mp3">🔔</div>
-    <div class="pad color2" data-audio="sounds/coffee.mp3">☕</div>
-    <div class="pad color5" data-audio="sounds/dog.mp3">🐶</div>
-    <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
-    <div class="pad color1" data-audio="sounds/fireplace.mp3">🤠</div>
-    <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
-    <div class="pad color3" data-audio="sounds/fireplace.mp3">😂</div>
-    <div class="pad color4" data-audio="sounds/fireplace.mp3">🤠</div>
+    <div class="pad color1" data-audio="sounds/DRUM ROLL.mp3">🥁</div>
+    <div class="pad color2" data-audio="sounds/EAT BULAGA.wav">😂</div>
+    <div class="pad color3" data-audio="sounds/YAHOOO.wav">🤠</div>
+    <div class="pad color4" data-audio="sounds/WIIY.wav">💣</div>
+    <div class="pad color5" data-audio="sounds/CHIPMUNK LAUGH.mp3">🎲</div>
+    <div class="pad color6" data-audio="sounds/AWW.wav">❌</div>
+    <div class="pad color1" data-audio="sounds/CROWD CLAP.wav">🥁</div>
+    <div class="pad color2" data-audio="sounds/CROWD LAUGH.wav">👟</div>
+    <div class="pad color3" data-audio="sounds/HORN 3.wav">🔔</div>
+    <div class="pad color2" data-audio="sounds/JOKING.wav">☕</div>
+    <div class="pad color5" data-audio="sounds/LOSER.wav">🐶</div>
+    <div class="pad color6" data-audio="sounds/AMAZING.wav">🤠</div>
+    <div class="pad color1" data-audio="sounds/WOOW.mp3">🤠</div>
+    <div class="pad color6" data-audio="sounds/BROKEN GLASS.wav">🤠</div>
+    <div class="pad color3" data-audio="sounds/ TOINK .mp3">😂</div>
+    <div class="pad color4" data-audio="sounds/DRUM HI-HAT.mp3">🤠</div>
     <div class="pad color1" data-audio="sounds/fireplace.mp3">🤠</div>
     <div class="pad color6" data-audio="sounds/fireplace.mp3">🤠</div>
     <div class="pad color3" data-audio="sounds/fireplace.mp3">🤠</div>
@@ -280,6 +280,8 @@ body {
 <input type="file" accept="audio/*" id="uploadAudio" class="upload-input">
 
 <script>
+
+
 // --- PADS ---
 const pads = document.querySelectorAll('.pad');
 const padAudios = new Map();
@@ -306,7 +308,22 @@ pads.forEach(pad => {
   pad.addEventListener('touchend', stopPlay);
   pad.addEventListener('mouseup', stopPlay);
   pad.addEventListener('mouseleave', stopPlay);
+  
 });
+// SET PAD TITLES FROM DEFAULT AUDIO FILENAMES
+pads.forEach(pad => {
+  const src = pad.dataset.audio;
+  if (!src) return;
+
+  let name = src.split('/').pop();      // get filename
+  name = name.replace(/\.[^/.]+$/, ''); // remove extension
+
+  pad.textContent = name;
+  pad.style.fontSize = "15px";
+  pad.style.textAlign = "center";
+  pad.style.padding = "4px";
+});
+
 
 // --- MUSIC DATA ---
 const musicData = {
@@ -370,23 +387,39 @@ function loadMusicButtons(category){
     btn.appendChild(titleSpan);
 
     btn.addEventListener('click', ()=>{
-      if(item.audio.paused){ item.audio.play(); btn.classList.add('active'); } 
-      else { item.audio.pause(); btn.classList.remove('active'); }
-      btn.classList.add('flash');
-      setTimeout(()=>btn.classList.remove('flash'),150);
-    });
+  audios.forEach(a=>{
+    if(a.audio !== item.audio){
+      a.audio.pause();
+      a.button?.classList.remove('active');
+    }
+  });
+
+  if(item.audio.paused){
+    item.audio.play();
+    btn.classList.add('active');
+  } else {
+    item.audio.pause();
+    btn.classList.remove('active');
+  }
+
+  btn.classList.add('flash');
+  setTimeout(()=>btn.classList.remove('flash'),150);
+});
 
     btn.addEventListener('dblclick', ()=>{
-      uploadInput.click();
-      uploadInput.onchange=()=>{
-        const file = uploadInput.files[0];
-        if(file){
-          item.audio.src=URL.createObjectURL(file);
-          item.title=file.name;
-          titleSpan.textContent=file.name;
-        }
-      };
-    });
+  uploadInput.value = ""; // 🔥 FIX
+  uploadInput.click();
+
+  uploadInput.onchange = ()=>{
+    const file = uploadInput.files[0];
+    if(file){
+      item.audio.src = URL.createObjectURL(file);
+      item.title = file.name;
+      titleSpan.textContent = file.name;
+    }
+  };
+});
+
 
     musicBar.appendChild(btn);
   });
@@ -443,7 +476,9 @@ longMusicButton.addEventListener('click', ()=>{
 });
 
 longMusicButton.addEventListener('dblclick', ()=>{
+  uploadInput.value = ""; // 🔥 FIX
   uploadInput.click();
+
   uploadInput.onchange = ()=>{
     const file = uploadInput.files[0];
     if(file){
