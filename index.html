@@ -210,29 +210,6 @@ body {
   .long-music { width:90%; max-width:none; }
   #volumeControl { width:90%; max-width:none; }
 }
-
-/* === RESPONSIVE SCALING FOR TABLETS & LARGE PHONES === */
-.pad-grid, .music-bar {
-  max-width: none;
-}
-
-.pad { font-size: 3vw; padding: 4px; }
-.music-bar button { font-size: 2.5vw; }
-.long-music { font-size: 2.5vw; max-width: 90%; }
-#splash img { max-width: 50vw; width: auto; height: auto; }
-
-@media (min-width: 700px) {
-  .pad-grid {
-    grid-template-columns: repeat(5, 1fr);
-    grid-auto-rows: 80px;
-  }
-  .music-bar {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 80px;
-  }
-  .pad { font-size: 18px; }
-  .music-bar button { font-size: 16px; }
-}
 </style>
 </head>
 <body>
@@ -303,6 +280,8 @@ body {
 <input type="file" accept="audio/*" id="uploadAudio" class="upload-input">
 
 <script>
+
+
 // --- PADS ---
 const pads = document.querySelectorAll('.pad');
 const padAudios = new Map();
@@ -336,13 +315,15 @@ pads.forEach(pad => {
   const src = pad.dataset.audio;
   if (!src) return;
 
-  let name = src.split('/').pop();
-  name = name.replace(/\.[^/.]+$/, '');
+  let name = src.split('/').pop();      // get filename
+  name = name.replace(/\.[^/.]+$/, ''); // remove extension
+
   pad.textContent = name;
   pad.style.fontSize = "15px";
   pad.style.textAlign = "center";
   pad.style.padding = "4px";
 });
+
 
 // --- MUSIC DATA ---
 const musicData = {
