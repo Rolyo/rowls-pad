@@ -204,6 +204,23 @@ body {
   .main-container { flex-direction:row; gap:10px; }
   .long-music, #volumeControl { width:90%; max-width:none; }
 }
+
+@media (min-width: 768px) {
+  .pad-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on tablets */
+    gap: 8px;
+  }
+
+  .music-bar {
+    grid-template-columns: repeat(4, 1fr); /* 4 music buttons per row */
+    gap: 8px;
+  }
+
+  .pad, .music-bar button {
+    font-size: clamp(14px, 1.8vw, 20px);
+  }
+}
+
 </style>
 </head>
 <body>
