@@ -14,11 +14,11 @@
 body {
   font-family: system-ui, sans-serif;
   background: url('images/aa.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  background-size:cover;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
 }
 
 /* SPLASH */
@@ -53,35 +53,27 @@ body {
 @keyframes splashZoom { 0% { transform: scale(0.6); } 100% { transform: scale(1.2); } }
 @keyframes fadeInText { to { opacity: 1; } }
 
-/* PADS GRID */
-/* Ensure pad-grid never exceeds screen height minus controls */
+/* PADS */
 .pad-grid {
-  display: grid;
-  gap: 6px;
-  width: 100%;
-  max-width: 1000px;
-  margin: 5px auto 20px auto;
-  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
-  
-  /* NEW: limit height to visible screen */
-  max-height: 50vh; /* 50% of viewport height */
-  overflow-y: auto; /* scroll if too many pads */
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 65px;
+  gap:5px;
+  width:100%;
+  max-width:420px;
+  margin-bottom:20px;
+  margin-top: 5px;
 }
-
 .pad {
-  width: 100%;
-  aspect-ratio: 1 / 1; /* always square */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 14px;
-  font-size: clamp(12px, 2vw, 18px); /* responsive font */
-  text-align: center;
-  padding: 4px;
-  cursor: pointer;
-  user-select: none;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:14px;
+  font-size:32px;
+  cursor:pointer;
+  user-select:none;
   transition: transform 0.1s, box-shadow 0.2s, filter 0.1s;
-  color: #fff;
+  color:#fff;
 }
 .pad:active {
   transform: scale(0.95);
@@ -103,15 +95,15 @@ body {
 
 /* MUSIC BAR */
 .music-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
-  gap: 5px;
-  width: 100%;
-  max-width: 1000px;
-
-  max-height: 40vh; /* music buttons won't overflow */
-  overflow-y: auto;
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 65px;
+  gap:5px;
+  width:100%;
+  max-width:400px;
+  margin:0 auto 14px auto;
 }
+
 .music-bar button {
   display:flex;
   flex-direction:column;
@@ -123,9 +115,9 @@ body {
   transition: transform 0.1s, box-shadow 0.2s;
   color:#fff;
   width:100%;
-  aspect-ratio: 1 / 1; /* always square */
+  height:65px;
   padding:0;
-  font-size: clamp(10px,1.5vw,16px);
+  font-size:22px;
   position:relative;
 }
 .music-bar button.active { animation: glow 0.5s ease-in-out infinite, padPulse 0.5s alternate infinite; transform: scale(1.05); }
@@ -170,6 +162,7 @@ body {
   justify-content: center;
   margin-top: 8px;
 }
+
 .category-bar button {
   padding: 7px 12px;
   border-radius: 20px;
@@ -179,13 +172,18 @@ body {
   font-weight: bold;
   background: rgba(255, 255, 255, 0.75);
   color: #000;
+  /* BLACK FONT */
   transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
 }
+
+/* HOVER EFFECT */
 .category-bar button:hover {
   background: #fff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
   transform: scale(1.05);
 }
+
+/* ACTIVE (SELECTED CATEGORY) */
 .category-bar button.active {
   background: lightskyblue;
   color: #000;
@@ -196,31 +194,22 @@ body {
 /* UPLOAD */
 .upload-input { display:none; }
 
-/* MAIN CONTAINER */
-.main-container { display:flex; flex-direction:column; flex:1; gap:10px; padding:5px; }
+/* MAIN CONTAINER (for landscape layout) */
+.main-container { display:flex; flex-direction:column; flex:1; gap:10px; }
 
-/* LANDSCAPE */
+/* LANDSCAPE-ONLY LAYOUT */
 @media (orientation: landscape) {
-  .main-container { flex-direction:row; gap:10px; }
-  .long-music, #volumeControl { width:90%; max-width:none; }
+  .main-container { flex-direction:row; gap:10px; padding:10px; flex:1; }
+
+  .pad-grid { flex:1; grid-template-columns: repeat(3, 1fr); grid-auto-rows:1fr; gap:5px; }
+  .music-bar { flex:1; grid-template-columns: repeat(2, 1fr); grid-auto-rows:1fr; gap:3px; }
+
+  .bottom-bar { display:flex; flex-direction:column; gap:6px; padding:10px; }
+
+  .long-music-container, .control-bar, .category-bar { width:100%; justify-content:center; }
+  .long-music { width:90%; max-width:none; }
+  #volumeControl { width:90%; max-width:none; }
 }
-
-@media (min-width: 768px) {
-  .pad-grid {
-    grid-template-columns: repeat(4, 1fr); /* 4 columns on tablets */
-    gap: 8px;
-  }
-
-  .music-bar {
-    grid-template-columns: repeat(4, 1fr); /* 4 music buttons per row */
-    gap: 8px;
-  }
-
-  .pad, .music-bar button {
-    font-size: clamp(14px, 1.8vw, 20px);
-  }
-}
-
 </style>
 </head>
 <body>
@@ -292,6 +281,7 @@ body {
 
 <script>
 
+
 // --- PADS ---
 const pads = document.querySelectorAll('.pad');
 const padAudios = new Map();
@@ -329,7 +319,11 @@ pads.forEach(pad => {
   name = name.replace(/\.[^/.]+$/, ''); // remove extension
 
   pad.textContent = name;
+  pad.style.fontSize = "15px";
+  pad.style.textAlign = "center";
+  pad.style.padding = "4px";
 });
+
 
 // --- MUSIC DATA ---
 const musicData = {
@@ -531,13 +525,8 @@ if("serviceWorker" in navigator){
 // INITIAL LOAD
 loadMusicButtons(currentCategory);
 assignPadsToCategory(currentCategory);
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-  }, 500); // faster hide for tablets
+window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1200);
 });
-
-
-</script>
-</body>
+</script> 
+</body> 
 </html>
