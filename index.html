@@ -343,18 +343,18 @@ pads.forEach(pad => {
 // --- MUSIC DATA ---
 const musicData = {
   wedding:[
-  { file: 'special1', title: 'Wedding1' },
-  { file: 'special2', title: 'EMPTY' },
-  { file: 'special3', title: 'EMPTY' },
-  { file: 'special4', title: 'EMPTY' },
-  { file: 'special5', title: 'EMPTY' },
-  { file: 'special6', title: 'EMPTY' },
-  { file: 'special7', title: 'EMPTY' },
-  { file: 'special8', title: 'EMPTY' },
-  { file: 'special9', title: 'EMPTY' },
-  { file: 'special10', title: 'EMPTY' },
-  { file: 'special11', title: 'EMPTY' },
-  { file: 'special12', title: 'EMPTY' }
+  { file: 'Wedding1', title: 'Wedding1' },
+  { file: 'Wedding2', title: 'EMPTY' },
+  { file: 'Wedding3', title: 'EMPTY' },
+  { file: 'Wedding4', title: 'EMPTY' },
+  { file: 'Wedding5', title: 'EMPTY' },
+  { file: 'Wedding6', title: 'EMPTY' },
+  { file: 'Wedding7', title: 'EMPTY' },
+  { file: 'Wedding8', title: 'EMPTY' },
+  { file: 'Wedding9', title: 'EMPTY' },
+  { file: 'Wedding10', title: 'EMPTY' },
+  { file: 'Wedding11', title: 'EMPTY' },
+  { file: 'Wedding12', title: 'EMPTY' }
 ],
   birthday: [
   { file: 'special1', title: 'Birthday1' },
@@ -399,7 +399,7 @@ const musicData = {
   { file: 'special12', title: 'EMPTY' }
 ],
   RetroDance: [
-  { file: 'special1', title: 'Fun1' },
+  { file: 'RETRO1', title: 'DANCING QUEEN' },
   { file: 'special2', title: 'EMPTY' },
   { file: 'special3', title: 'EMPTY' },
   { file: 'special4', title: 'EMPTY' },
@@ -467,14 +467,14 @@ const musicData = {
     { file: 'special9', title: 'EMPTY' },
     { file: 'special10', title: 'EMPTY' },
     { file: 'special11', title: 'EMPTY' },
-    { file: 'special12', title: 'Special12' }
+    { file: 'special12', title: 'EMPTY' }
     
   ]
 };
 
 const hiddenMusicData = {
   wedding: [
-    { file: 'H-Wedding1', title: 'DANCING QUEEN' },
+    { file: 'H-WED1', title: 'EMPTY' },
     { file: 'H-Wedding2', title: 'Special 2' },
     { file: 'H-Wedding3', title: 'Special 3' },
     { file: 'H-Wedding4', title: 'Special 4' },
@@ -1007,7 +1007,7 @@ if("serviceWorker" in navigator){
 // INITIAL LOAD
 loadMusicButtons(currentCategory);
 assignPadsToCategory(currentCategory);
-window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1200);
+window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1000);
 });
 </script> 
 </body> 
