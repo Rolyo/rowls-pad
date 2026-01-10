@@ -54,13 +54,18 @@ body {
 @keyframes fadeInText { to { opacity: 1; } }
 
 /* PADS GRID */
+/* Ensure pad-grid never exceeds screen height minus controls */
 .pad-grid {
   display: grid;
   gap: 6px;
   width: 100%;
-  max-width: 1000px; /* optional max width */
+  max-width: 1000px;
   margin: 5px auto 20px auto;
-  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); /* auto-detect columns */
+  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+  
+  /* NEW: limit height to visible screen */
+  max-height: 50vh; /* 50% of viewport height */
+  overflow-y: auto; /* scroll if too many pads */
 }
 
 .pad {
@@ -99,11 +104,13 @@ body {
 /* MUSIC BAR */
 .music-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); /* responsive auto-fit */
+  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
   gap: 5px;
   width: 100%;
   max-width: 1000px;
-  margin: 0 auto 14px auto;
+
+  max-height: 40vh; /* music buttons won't overflow */
+  overflow-y: auto;
 }
 .music-bar button {
   display:flex;
@@ -267,9 +274,6 @@ body {
 <input type="file" accept="audio/*" id="uploadAudio" class="upload-input">
 
 <script>
-// Your original JS code remains unchanged
-// Pads, music buttons, upload, long music, categories
-// It works perfectly with the new responsive pads
 
 // --- PADS ---
 const pads = document.querySelectorAll('.pad');
@@ -510,8 +514,12 @@ if("serviceWorker" in navigator){
 // INITIAL LOAD
 loadMusicButtons(currentCategory);
 assignPadsToCategory(currentCategory);
-window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1000);
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("splash").style.display = "none";
+  }, 500); // faster hide for tablets
 });
+
 
 </script>
 </body>
