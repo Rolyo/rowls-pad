@@ -55,29 +55,25 @@ body {
 
 /* PADS */
 .pad-grid {
-  display: grid;
+  display:grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  width: 100%;
-  max-width: 420px;
-  margin: 5px auto 20px auto;
+  grid-auto-rows: 65px;
+  gap:5px;
+  width:100%;
+  max-width:420px;
+  margin-bottom:20px;
+  margin-top: 5px;
 }
-
 .pad {
-  aspect-ratio: 1 / 1;
-  /* 🔥 THIS MAKES IT SQUARE */
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 14px;
-  font-size: 15px;
-  cursor: pointer;
-  user-select: none;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:14px;
+  font-size:32px;
+  cursor:pointer;
+  user-select:none;
   transition: transform 0.1s, box-shadow 0.2s, filter 0.1s;
-  color: #fff;
-  text-align: center;
-  padding: 4px;
+  color:#fff;
 }
 .pad:active {
   transform: scale(0.95);
@@ -529,7 +525,7 @@ if("serviceWorker" in navigator){
 // INITIAL LOAD
 loadMusicButtons(currentCategory);
 assignPadsToCategory(currentCategory);
-window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },100);
+window.addEventListener("load", ()=>{ setTimeout(()=>{ document.getElementById("splash").style.display="none"; },1000);
 });
 </script> 
 </body> 
