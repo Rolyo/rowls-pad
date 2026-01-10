@@ -834,7 +834,9 @@ document.getElementById('reloadPads').addEventListener('click', () => {
   const inner = item.button.querySelector('.inner-title');
   if (inner) {
     inner.textContent = item.defaultTitle;
-
+  }
+  }
+  });
     // Recalculate scroll animation
     requestAnimationFrame(() => {
       if(inner.scrollWidth <= inner.parentElement.clientWidth){
@@ -843,11 +845,6 @@ document.getElementById('reloadPads').addEventListener('click', () => {
         inner.style.animation = 'scrollTitle 6s linear infinite';
       }
     });
-  }
-}
-
-  });
-
   // reload hidden music
   (hiddenCategoryAudios[currentCategory] || []).forEach(item => {
     item.audio.src = item.defaultSrc;
@@ -859,7 +856,9 @@ document.getElementById('reloadPads').addEventListener('click', () => {
   const inner = item.button.querySelector('.inner-title');
   if (inner) {
     inner.textContent = item.defaultTitle;
-
+  }
+  }
+  });
     // Recalculate scroll animation
     requestAnimationFrame(() => {
       if(inner.scrollWidth <= inner.parentElement.clientWidth){
@@ -868,11 +867,6 @@ document.getElementById('reloadPads').addEventListener('click', () => {
         inner.style.animation = 'scrollTitle 6s linear infinite';
       }
     });
-  }
-}
-
-  });
-
 
 
   longMusicAudio.src='sounds/featured.mp3';
@@ -936,7 +930,6 @@ function createMusicButton(item, index){
       inner.style.animation = 'scrollTitle 6s linear infinite';
     }
   });
-
   // CLICK PLAY / PAUSE
   btn.addEventListener('click', () => {
     const allAudios = [...categoryAudios[currentCategory], ...(hiddenCategoryAudios[currentCategory] || [])];
@@ -946,7 +939,6 @@ function createMusicButton(item, index){
         a.button?.classList.remove('active');
       }
     });
-
     if (item.audio.paused) {
       item.audio.play();
       btn.classList.add('active');
@@ -954,11 +946,9 @@ function createMusicButton(item, index){
       item.audio.pause();
       btn.classList.remove('active');
     }
-
     btn.classList.add('flash');
     setTimeout(()=>btn.classList.remove('flash'),150);
   });
-
   // DOUBLE-CLICK UPLOAD
   btn.addEventListener('dblclick', () => {
     uploadInput.value = "";
@@ -973,7 +963,6 @@ function createMusicButton(item, index){
    }
     };
   });
-
 // Recalculate scroll for new title
 requestAnimationFrame(() => {
   if(inner.offsetWidth <= titleSpan.offsetWidth){
@@ -982,10 +971,8 @@ requestAnimationFrame(() => {
     inner.style.animation = 'scrollTitle 15s linear infinite'; // <-- use slower duration
   }
 });
-
   musicBar.appendChild(btn);
 }
-
 const hiddenCategoryAudios = {};
 Object.keys(hiddenMusicData).forEach(cat => {
   hiddenCategoryAudios[cat] = hiddenMusicData[cat].map(item => ({
@@ -998,12 +985,10 @@ Object.keys(hiddenMusicData).forEach(cat => {
   }));
 });
 
-
 // SERVICE WORKER
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js");});
 }
-
 // INITIAL LOAD
 loadMusicButtons(currentCategory);
 assignPadsToCategory(currentCategory);
