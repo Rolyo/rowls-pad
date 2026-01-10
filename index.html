@@ -974,14 +974,14 @@ function createMusicButton(item, index){
     };
   });
 
-        // Recalculate scroll for new title
-        requestAnimationFrame(() => {
-          if(inner.offsetWidth <= titleSpan.offsetWidth){
-            inner.style.animation = 'none';
-          } else {
-            inner.style.animation = 'scrollTitle 6s linear infinite';
-          }
-        });
+// Recalculate scroll for new title
+requestAnimationFrame(() => {
+  if(inner.offsetWidth <= titleSpan.offsetWidth){
+    inner.style.animation = 'none';
+  } else {
+    inner.style.animation = 'scrollTitle 15s linear infinite'; // <-- use slower duration
+  }
+});
 
   musicBar.appendChild(btn);
 }
